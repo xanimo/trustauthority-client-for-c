@@ -30,40 +30,40 @@ MAKEFILE_PATH := $(realpath $(lastword $(MAKEFILE_LIST)))
 MAKEFILE_DIR := $(dir $(MAKEFILE_PATH))
 
 .PHONY: all clean
-.DEFAULT: ubuntu_20
+.DEFAULT: ubuntu_22
 
-all: ubuntu_20 sgx_token_docker tdx_token_docker azure_tdx_token_docker
+all: ubuntu_22 sgx_token_docker tdx_token_docker azure_tdx_token_docker
 
-ubuntu_20: 
-	DOCKER_BUILDKIT=1 docker build \
+ubuntu_22: 
+	docker buildx build \
 		--build-arg ENABLE_DEBUG=${ENABLE_DEBUG} \
 		${DOCKER_PROXY_FLAGS} \
-		-f docker/Dockerfile.ubuntu_20 \
-		--output ${MAKEFILE_DIR}bin/ubuntu_20 \
+		-f docker/Dockerfile.ubuntu_22 \
+		--output ${MAKEFILE_DIR}bin/ubuntu_22 \
 		--target  export-stage \
-		-t $(ORGNAME)/$(APPNAME)-ubuntu_20:$(VERSION) \
+		-t $(ORGNAME)/$(APPNAME)-ubuntu_22:$(VERSION) \
 		--build-arg DCAP_VERSION=${DCAP_VERSION} \
 		--build-arg PSW_VERSION=${PSW_VERSION} \
 		--build-arg VERSION=${VERSION} \
-		--build-arg COMMIT=${COMMIT} .
+		--build-arg COMMIT=${COMMIT} . --load
 
 test-image:
-	DOCKER_BUILDKIT=1 docker build \
-		-t $(ORGNAME)/$(APPNAME)-ubuntu_20-unit-test:$(VERSION) \
+	docker buildx build \
+		-t $(ORGNAME)/$(APPNAME)-ubuntu_22-unit-test:$(VERSION) \
 		${DOCKER_PROXY_FLAGS} \
-		-f docker/Dockerfile.ubuntu_20 \
+		-f docker/Dockerfile.ubuntu_22 \
 		--build-arg VERSION=${VERSION} \
 		--build-arg COMMIT=${COMMIT} \
-		--target  test-image \
-		.
+		--target test-image \
+		. --load
 
 test-coverage: test-image
-	docker run -i ${DOCKER_RUN_PROXY_FLAGS} --rm $(ORGNAME)/$(APPNAME)-ubuntu_20-unit-test:$(VERSION) \
+	docker run -i ${DOCKER_RUN_PROXY_FLAGS} --rm $(ORGNAME)/$(APPNAME)-ubuntu_22-unit-test:$(VERSION) \
 		/bin/bash -c "lcov --list /tmp/filtered_coverage.info"
-	docker rmi $(ORGNAME)/$(APPNAME)-ubuntu_20-unit-test:$(VERSION) || true
+	docker rmi $(ORGNAME)/$(APPNAME)-ubuntu_22-unit-test:$(VERSION) || true
 
 sgx_token_docker:
-	DOCKER_BUILDKIT=1 docker build \
+	docker buildx build \
 		--build-arg ENABLE_DEBUG=${ENABLE_DEBUG} \
 		${DOCKER_PROXY_FLAGS} \
 		-f examples/sgx_token/Dockerfile \
@@ -72,10 +72,10 @@ sgx_token_docker:
 		--build-arg PSW_VERSION=${PSW_VERSION} \
 		--build-arg MAKEFILE_DIR=${MAKEFILE_DIR} \
 		--build-arg VERSION=${VERSION} \
-		--build-arg COMMIT=${COMMIT} .
+		--build-arg COMMIT=${COMMIT} . --load
 
 tdx_token_docker:
-	DOCKER_BUILDKIT=1 docker build \
+	docker buildx build \
 		--build-arg ENABLE_DEBUG=${ENABLE_DEBUG} \
 		${DOCKER_PROXY_FLAGS} \
 		-f examples/tdx_token/Dockerfile \
@@ -85,7 +85,7 @@ tdx_token_docker:
 		--build-arg DCAP_VERSION=${DCAP_VERSION} \
 		--build-arg MAKEFILE_DIR=${MAKEFILE_DIR} \
 		--build-arg VERSION=${VERSION} \
-		--build-arg COMMIT=${COMMIT} .
+		--build-arg COMMIT=${COMMIT} . --load
 
 azure_tdx_token_docker: USE_AZURE_TDX_ADAPTER = ON
 azure_tdx_token_docker: TDX_TOKEN_BUILD_PREFIX = azure
