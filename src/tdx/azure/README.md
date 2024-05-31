@@ -14,7 +14,7 @@ Use <b>Ubuntu 20.04</b>.
 Please install tpm2-tools before using the library to generate quote.
 
 ```
-apt-get install tpm2-tools=4.1.1-1ubuntu0.20.04.1
+apt-get install tpm2-tools
 ```
 
 ## Usage

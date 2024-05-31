@@ -25,30 +25,30 @@ make DEBUG=1 ubuntu_20
 ## Prerequistes to build connector library from src without using docker in ubuntu 20.04 build system 
 ```shell
 #Install sgx repo list 
-echo 'deb [arch=amd64] https://download.01.org/intel-sgx/sgx_repo/ubuntu focal main' > /etc/apt/sources.list.d/intel-sgx.list  
+echo 'deb [arch=amd64] https://download.01.org/intel-sgx/sgx_repo/ubuntu jammy main' > /etc/apt/sources.list.d/intel-sgx.list  
 wget -qO - https://download.01.org/intel-sgx/sgx_repo/ubuntu/intel-sgx-deb.key | apt-key add -  
 
 #create the workdir
 mkdir /opt/intel  
 
 #Install sgx sdk using
-wget -q https://download.01.org/intel-sgx/sgx-linux/2.22/distro/ubuntu20.04-server/sgx_linux_x64_sdk_2.22.100.3.bin;  \  
+wget -q https://download.01.org/intel-sgx/sgx-linux/2.22/distro/ubuntu22.04-server/sgx_linux_x64_sdk_2.22.100.3.bin;  \  
     chmod +x sgx_linux_x64_sdk_2.22.100.3.bin; \  
     echo 'yes' | ./sgx_linux_x64_sdk_2.22.100.3.bin  
 
 #Install other dependencies like sgx dcap and others
 apt-get update && apt-get install -y --no-install-recommends \  
-    libsgx-urts=2.22.100.3-focal \  
-    libsgx-qe3-logic=1.19.100.3-focal1 \  
-    libsgx-pce-logic=1.19.100.3-focal1 \  
-    libsgx-dcap-default-qpl=1.19.100.3-focal1 \  
-    libsgx-dcap-ql=1.19.100.3-focal1 \  
-    libsgx-dcap-ql-dev=1.19.100.3-focal1 \  
-    libtdx-attest-dev=1.19.100.3-focal1 \  
-    libtdx-attest=1.19.100.3-focal1 \  
+    libsgx-urts=2.22.100.3-jammy \  
+    libsgx-qe3-logic=1.19.100.3-jammy1 \  
+    libsgx-pce-logic=1.19.100.3-jammy1 \  
+    libsgx-dcap-default-qpl=1.19.100.3-jammy1 \  
+    libsgx-dcap-ql=1.19.100.3-jammy1 \  
+    libsgx-dcap-ql-dev=1.19.100.3-jammy1 \  
+    libtdx-attest-dev=1.19.100.3-jammy1 \  
+    libtdx-attest=1.19.100.3-jammy1 \  
     cmake \  
     libcurl4-openssl-dev \
-    libjansson-dev=2.12-1build1 \
+    libjansson-dev \
     pkg-config \
     libtool \
     automake \

@@ -23,7 +23,7 @@ apt-get update &&  apt-get install -y --no-install-recommends \
     libssl-dev \
     git \
     libcpprest-dev \
-    libjansson-dev=2.12-1build1 \ 
+    libjansson-dev \ 
     build-essential \ 
     ca-certificates \
     googletest \
